@@ -2,5 +2,6 @@ data/*
 !data/.htaccess
 uploads/*
 !uploads/.htaccess
-!uploads/tmp
+!uploads/tmp/
 uploads/tmp/*
+!uploads/tmp/.gitkeep
