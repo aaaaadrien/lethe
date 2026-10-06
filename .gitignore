@@ -1,2 +1,4 @@
 data/*
-upload/*
+!data/.htaccess
+uploads/*
+!uploads/.htaccess

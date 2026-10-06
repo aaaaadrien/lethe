@@ -1,0 +1,9 @@
+# Interdit le listing des répertoires
+Options -Indexes
+
+# Interdit l'accès direct à la configuration (défense en profondeur :
+# les dossiers src/, data/, uploads/, cron/ et lang/ ont chacun leur propre
+# .htaccess "Require all denied")
+<Files "config.php">
+Require all denied
+</Files>
