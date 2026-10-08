@@ -150,14 +150,14 @@ pour les clients publics.
 1. Dans votre realm Keycloak, créer un nouveau **Client** (ex. `lethe`) :
    - **Type de client** : `OpenID Connect`
    - **Client ID** : `lethe` (ou le nom de votre choix)
-   - **Authentification client** : **Désactivée** (client public — aucun secret nécessaire)
+   - **Authentification client** : **On** (recommendé)
    - **URIs de redirection valides** : `https://lethe.linuxtrickslab.lan/index.php?action=oidc_callback`
    - **URIs de redirection post-déconnexion valides** : `https://lethe.linuxtrickslab.lan/`
    - **URL racine** : `https://lethe.linuxtrickslab.lan/`
    - **Origines Web** : `+https://lethe.linuxtrickslab.lan`
    - **Flux standard** : **Activé**
    - **Accès direct** : **Désactivé** (recommandé)
-   - **Authentification client** : **Désactivée** (PKCE gère la sécurité)
+   - **Authentification client** : **Activé** (PKCE gère la sécurité)
 
 2. S'assurer que le realm Keycloak dispose des scopes `openid`, `profile` et `email`.
 
