@@ -24,6 +24,8 @@ final class UserController
             'username' => $u['username'],
             'is_admin' => (int)$u['is_admin'],
             'created_at' => $u['created_at'],
+            'oidc_sub' => $u['oidc_sub'] ?? null,
+            'oidc_provider' => $u['oidc_provider'] ?? null,
         ], $rows);
         Response::json(['status' => 'ok', 'users' => $users]);
     }

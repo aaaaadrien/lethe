@@ -53,6 +53,7 @@ est multilingue (anglais et français) et détectée automatiquement depuis l'en
      personnaliser à chaque envoi)
    - `MAX_FILE_SIZE`, `MIN_EXPIRATION_DAYS`, `MAX_EXPIRATION_DAYS`, `DEFAULT_EXPIRATION_DAYS`
    - le bloc `SMTP_*` si `MAIL_TRANSPORT` vaut `'smtp'`
+   - le bloc OIDC (voir [Connexion OIDC](#connexion-oidc))
 5. Se connecter une première fois avec le compte créé automatiquement :
    - **Utilisateur : `admin`**
    - **Mot de passe : `admin`**
@@ -137,6 +138,76 @@ l'expéditeur** (clés `mail.subject` / `mail.body` / `mail.password_notice` dan
 `lang/*.php`). Ils peuvent être surchargés dans `config.php` via `MAIL_SUBJECT` et
 `MAIL_BODY_TEMPLATE` (laisser vide pour utiliser les modèles intégrés). L'utilisateur peut
 aussi personnaliser le message à chaque envoi (champ « Message personnalisé »).
+
+### Connexion OIDC
+
+Lethe prend en charge la connexion via OpenID Connect (testé avec **Keycloak**). Il utilise
+le **Code Flow avec PKCE** (S256), ce qui signifie qu'aucun secret client n'est nécessaire
+pour les clients publics.
+
+#### Configuration Keycloak
+
+1. Dans votre realm Keycloak, créer un nouveau **Client** (ex. `lethe`) :
+   - **Type de client** : `OpenID Connect`
+   - **Client ID** : `lethe` (ou le nom de votre choix)
+   - **Authentification client** : **Désactivée** (client public — aucun secret nécessaire)
+   - **URIs de redirection valides** : `https://lethe.linuxtrickslab.lan/index.php?action=oidc_callback`
+   - **URIs de redirection post-déconnexion valides** : `https://lethe.linuxtrickslab.lan/`
+   - **URL racine** : `https://lethe.linuxtrickslab.lan/`
+   - **Origines Web** : `+https://lethe.linuxtrickslab.lan`
+   - **Flux standard** : **Activé**
+   - **Accès direct** : **Désactivé** (recommandé)
+   - **Authentification client** : **Désactivée** (PKCE gère la sécurité)
+
+2. S'assurer que le realm Keycloak dispose des scopes `openid`, `profile` et `email`.
+
+3. Dans `config.php`, configurer le bloc OIDC :
+
+```php
+// Activer la connexion OIDC (mettre à '1')
+define('OIDC_ENABLED', '1');
+
+// URL de base du realm Keycloak (l'"Issuer" dans les paramètres du realm)
+// Exemple : 'https://sso.linuxtrickslab.lan/realms/linuxtrickslab'
+define('OIDC_AUTH_SERVER', '');
+
+// Le client ID enregistré dans Keycloak
+define('OIDC_CLIENT_ID', 'lethe');
+
+// Secret client (uniquement pour les clients confidentiels — laisser vide pour les clients publics)
+define('OIDC_CLIENT_SECRET', '');
+
+// URI de redirection enregistrée dans Keycloak (doit correspondre exactement)
+// Exemple : 'https://lethe.linuxtrickslab.lan/index.php?action=oidc_callback'
+define('OIDC_REDIRECT_URI', '');
+
+// Scopes à demander (openid est toujours inclus)
+define('OIDC_SCOPES', 'openid profile email');
+
+// URI JWKS (laisser vide pour auto-découverte depuis l'issuer)
+define('OIDC_JWKS_URI', '');
+
+// TTL du cache JWKS en secondes (les clés changent rarement)
+define('OIDC_JWKS_CACHE_TTL', 3600);
+
+// Tolérance d'horloge autorisée pour l'expiration des tokens (secondes)
+define('OIDC_CLOCK_SKEW', 30);
+```
+
+#### Fonctionnement
+
+- Le SPA appelle `GET /?action=oidc_init` pour obtenir l'URL d'autorisation Keycloak (avec
+  un `code_challenge` PKCE et un `state` aléatoire stocké en session).
+- L'utilisateur est redirigé vers Keycloak, s'authentifie, et est renvoyé vers l'URL de
+  callback avec un code d'autorisation.
+- Le serveur échange le code contre un ID token (JWT) au endpoint token de Keycloak,
+  valide la signature via les JWKS Keycloak (RS256), vérifie l'issuer, l'audience et
+  l'expiration.
+- Si valide, l'utilisateur est **auto-créé** (s'il n'existe pas déjà) à partir du
+  `preferred_username` ou `email` du token, et une session est établie.
+
+> **Note** : OIDC et la connexion par mot de passe peuvent coexister. Si OIDC est désactivé
+> (`OIDC_ENABLED` = `''`), seule la connexion par identifiant/mot de passe reste disponible.
 
 ## Utilisation
 

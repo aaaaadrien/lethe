@@ -685,22 +685,27 @@ Lethe.views = {
             <table class="table align-middle mb-0">
               <thead><tr><th>${T('users.username_col')}</th><th>${T('common.role')}</th><th>${T('common.created')}</th><th class="text-end">${T('common.actions')}</th></tr></thead>
               <tbody>
-                ${users.map((u) => `
+                ${users.map((u) => {
+                  const isOidc = u.oidc_sub;
+                  return `
                   <tr>
-                    <td class="file-name">${E(u.username)}${parseInt(u.id, 10) === me.id ? ` <span class="badge badge-accent">${T('common.you')}</span>` : ''}</td>
+                    <td class="file-name">${E(u.username)}${parseInt(u.id, 10) === me.id ? ` <span class="badge badge-accent">${T('common.you')}</span>` : ''}${isOidc ? ` <span class="badge badge-info" title="${E(u.oidc_provider)}">OIDC</span>` : ''}</td>
                     <td>${parseInt(u.is_admin, 10) === 1 ? `<span class="badge badge-accent">${T('common.admin')}</span>` : `<span class="badge badge-secondary">${T('common.user')}</span>`}</td>
                     <td>${U().formatDate(u.created_at)}</td>
                     <td class="text-end text-nowrap">
-                      <form class="d-inline-flex gap-2 align-items-center" data-reset-form="${u.id}">
-                        <input type="password" name="new_password" class="form-control form-control-sm" placeholder="${T('users.new_password')}" style="width:150px;">
-                        <button class="btn btn-outline-secondary rounded-pill btn-sm">${T('users.reset')}</button>
-                      </form>
+                      ${isOidc ? `
+                        <span class="text-secondary small">${T('users.oidc_account')}</span>` : `
+                        <form class="d-inline-flex gap-2 align-items-center" data-reset-form="${u.id}">
+                          <input type="password" name="new_password" class="form-control form-control-sm" placeholder="${T('users.new_password')}" style="width:150px;">
+                          <button class="btn btn-outline-secondary rounded-pill btn-sm">${T('users.reset')}</button>
+                        </form>`}
                       ${parseInt(u.id, 10) !== me.id ? `
                         <button type="button" class="btn-icon danger ms-2" title="${T('common.delete')}" data-delete="${u.id}">
                           <i class="bi bi-trash"></i>
                         </button>` : ''}
                     </td>
-                  </tr>`).join('')}
+                  </tr>`;
+                }).join('')}
               </tbody>
             </table>
           </div>

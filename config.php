@@ -67,3 +67,35 @@ define('SMTP_VERIFY_CERT', true);
 define('SMTP_USERNAME', '');
 define('SMTP_PASSWORD', '');
 define('SMTP_TIMEOUT', 15);
+
+// Set OIDC_ENABLED to '1' to enable OIDC login. Leave '0' to disable
+// (only username/password login remains).
+define('OIDC_ENABLED', '');
+
+// The Keycloak authorization server URL (base URL of the Keycloak realm).
+// Example: 'https://sso.linuxtrickslab.lan/realms/linuxtrickslab'
+define('OIDC_AUTH_SERVER', '');
+
+// The Keycloak client ID registered in the realm.
+define('OIDC_CLIENT_ID', '');
+
+// The Keycloak client secret (for confidential clients).
+define('OIDC_CLIENT_SECRET', '');
+
+// The redirect URI registered in Keycloak. Must match exactly.
+// Example: 'https://lethe.linuxtrickslab.lan/index.php?action=oidc_callback'
+define('OIDC_REDIRECT_URI', '');
+
+// OIDC scopes to request. 'openid' is always included.
+// Add 'profile', 'email', 'offline_access' as needed.
+define('OIDC_SCOPES', 'openid profile email');
+
+// JWKS URI for validating JWT signatures (auto-discovered from issuer).
+// Leave empty to use the auto-discovered value.
+define('OIDC_JWKS_URI', '');
+
+// JWKS cache TTL in seconds (JWKS keys change rarely).
+define('OIDC_JWKS_CACHE_TTL', 3600);
+
+// Maximum allowed clock skew in seconds (for token expiry validation).
+define('OIDC_CLOCK_SKEW', 30);

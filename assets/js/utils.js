@@ -7,6 +7,7 @@ Lethe.state = {
   csrfToken: '',
   currentUser: null,
   currentView: 'dashboard',
+  oidc: null,
 };
 
 Lethe.config = window.letheConfig || {};
@@ -207,5 +208,27 @@ Lethe.utils = {
       modalEl.addEventListener('hidden.bs.modal', onDismiss);
       modal.show();
     });
+  },
+
+  /**
+   * Generate a cryptographically random string of given length.
+   */
+  randomString(length = 32) {
+    const array = new Uint8Array(length);
+    crypto.getRandomValues(array);
+    return Array.from(array, (b) => b.toString(16).padStart(2, '0')).join('');
+  },
+
+  /**
+   * Compute SHA-256 hash and return base64url-encoded (no padding).
+   */
+  async sha256Base64Url(data) {
+    const encoder = new TextEncoder();
+    const hashBuffer = await crypto.subtle.digest('SHA-256', encoder.encode(data));
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return btoa(String.fromCharCode(...hashArray))
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=+$/, '');
   },
 };

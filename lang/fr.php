@@ -22,6 +22,7 @@ return [
     // Connexion
     'login.title' => 'Connexion',
     'login.submit' => 'Se connecter',
+    'login.oidc' => 'Se connecter avec OIDC',
 
     // Libellés, boutons et statuts communs
     'common.username' => "Nom d'utilisateur",
@@ -128,6 +129,7 @@ return [
     'users.admin' => 'Administrateur',
     'users.new_password' => 'Nouveau mdp',
     'users.reset' => 'Réinitialiser',
+    'users.oidc_account' => 'Compte OIDC',
 
     // Infobulles des boutons-icônes
     'action.copy_link' => 'Copier le lien',

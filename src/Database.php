@@ -43,6 +43,8 @@ final class Database
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 username TEXT UNIQUE NOT NULL,
                 password_hash TEXT NOT NULL,
+                oidc_sub TEXT,
+                oidc_provider TEXT,
                 is_admin INTEGER NOT NULL DEFAULT 0,
                 created_at TEXT NOT NULL
             );
@@ -127,5 +129,36 @@ final class Database
             $stmt = $db->prepare('INSERT INTO users (username, password_hash, is_admin, created_at) VALUES (?, ?, 1, ?)');
             $stmt->execute(['admin', password_hash('admin', PASSWORD_DEFAULT), gmdate('c')]);
         }
+    }
+
+    /**
+     * Find or create a user by OIDC subject identifier (just-in-time provisioning).
+     * Returns the user row on success, null on failure.
+     */
+    public static function getOrCreateUserByOidc(PDO $db, string $oidcSub, string $provider, string $username): ?array
+    {
+        // Try to find existing user by OIDC subject
+        $stmt = $db->prepare('SELECT * FROM users WHERE oidc_sub = ? AND oidc_provider = ?');
+        $stmt->execute([$oidcSub, $provider]);
+        $user = $stmt->fetch();
+        if ($user) {
+            return $user;
+        }
+
+        // Try to find existing user by username (link OIDC account)
+        $stmt = $db->prepare('SELECT * FROM users WHERE username = ?');
+        $stmt->execute([$username]);
+        $user = $stmt->fetch();
+        if ($user) {
+            $stmt = $db->prepare('UPDATE users SET oidc_sub = ?, oidc_provider = ? WHERE id = ?');
+            $stmt->execute([$oidcSub, $provider, $user['id']]);
+            return $user;
+        }
+
+        // Create new user (just-in-time provisioning)
+        $stmt = $db->prepare('INSERT INTO users (username, password_hash, oidc_sub, oidc_provider, is_admin, created_at) VALUES (?, ?, ?, ?, 0, ?)');
+        $stmt->execute([$username, '', $oidcSub, $provider, Helpers::now()]);
+        $user = $db->query('SELECT * FROM users WHERE id = ' . $db->lastInsertId())->fetch();
+        return $user;
     }
 }

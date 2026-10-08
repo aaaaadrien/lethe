@@ -24,6 +24,8 @@ return function (Router $router): void {
     $router->map('get_session', fn() => $auth->getSession());
     $router->map('login', fn() => $auth->login());
     $router->map('logout', fn() => $auth->logout());
+    $router->map('oidc_init', fn() => $auth->oidcInit());
+    $router->map('oidc_callback', fn() => $auth->oidcCallback());
 
     // File sharing (authenticated)
     $router->map('upload_chunk', fn() => $files->uploadChunk());

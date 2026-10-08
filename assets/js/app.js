@@ -131,6 +131,31 @@
     loadView('dashboard');
   });
 
+  // OIDC login button
+  const oidcLoginBtn = document.getElementById('oidc-login-btn');
+  if (oidcLoginBtn) {
+    oidcLoginBtn.addEventListener('click', async () => {
+      const oidc = Lethe.state.oidc;
+      if (!oidc || !oidc.enabled) {
+        return;
+      }
+
+      try {
+        const data = await Lethe.utils.fetchAction('oidc_init');
+        window.location.href = data.authorization_url;
+      } catch (err) {
+        // OIDC not available or error - fall back to regular login
+      }
+    });
+  }
+
+  // Show OIDC button when OIDC is enabled and user is logged out
+  function showOidcButton() {
+    if (oidcLoginBtn && Lethe.state.oidc && Lethe.state.oidc.enabled && !Lethe.state.currentUser) {
+      oidcLoginBtn.style.display = 'block';
+    }
+  }
+
   // Init
   Lethe.state.csrfToken = document.querySelector('meta[name="csrf-token"]').content;
 
@@ -139,10 +164,13 @@
   Lethe.utils.fetchAction('get_session')
     .then((data) => {
       setLoggedIn(data.user);
+      Lethe.state.oidc = data.oidc || null;
+      showOidcButton();
       loadView('dashboard');
     })
     .catch(() => {
       setLoggedIn(null);
+      showOidcButton();
       loadView('dashboard');
     });
 })();

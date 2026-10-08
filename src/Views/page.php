@@ -131,6 +131,9 @@ $i18n = json_encode(
               </div>
               <div id="login-error" class="alert alert-danger py-2 small" style="display:none;"></div>
               <button type="submit" class="btn btn-accent w-100 rounded-pill mt-2"><?= htmlspecialchars(Language::t('login.submit'), ENT_QUOTES, 'UTF-8') ?></button>
+              <button type="button" class="btn btn-outline-secondary w-100 rounded-pill mt-2" id="oidc-login-btn" style="display:none;">
+                <i class="bi bi-shield-lock me-2"></i><?= htmlspecialchars(Language::t('login.oidc'), ENT_QUOTES, 'UTF-8') ?>
+              </button>
             </form>
           </div>
         </div>

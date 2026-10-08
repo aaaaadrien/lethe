@@ -22,6 +22,7 @@ return [
     // Login
     'login.title' => 'Log in',
     'login.submit' => 'Sign in',
+    'login.oidc' => 'Sign in with OIDC',
 
     // Common labels, buttons and statuses
     'common.username' => 'Username',
@@ -128,6 +129,7 @@ return [
     'users.admin' => 'Administrator',
     'users.new_password' => 'New password',
     'users.reset' => 'Reset',
+    'users.oidc_account' => 'OIDC account',
 
     // Icon button tooltips
     'action.copy_link' => 'Copy link',
