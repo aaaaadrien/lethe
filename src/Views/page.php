@@ -51,6 +51,7 @@ $i18n = json_encode(
           <div class="logo d-none d-md-flex">
             <svg width="28" height="28" viewBox="0 0 100 100"><rect width="100" height="100" rx="24" fill="#0d0d0d"/><path d="M16 42 Q 28 30 40 42 T 64 42 T 88 42" stroke="#ffffff" stroke-width="8" fill="none" stroke-linecap="round"/><path d="M16 62 Q 28 50 40 62 T 64 62 T 88 62" stroke="#6C5CFF" stroke-width="8" fill="none" stroke-linecap="round"/></svg>
             Lethe <small class="text-accent fs-6"><?= htmlspecialchars(Language::t('brand.tagline'), ENT_QUOTES, 'UTF-8') ?></small>
+            <br><small class="text-muted" style="font-size:0.7rem">v<?= APP_VERSION ?></small>
           </div>
           <a href="#" class="nav-link" data-view="dashboard">
             <i class="bi bi-house"></i>

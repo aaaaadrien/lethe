@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 define('APP_NAME', 'Lethe');
+define('APP_VERSION', '0.2');
 
 // Public base URL used to build share links.
 // Leave empty ('') for automatic detection from $_SERVER (recommended).
