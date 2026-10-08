@@ -70,7 +70,7 @@ define('SMTP_TIMEOUT', 15);
 
 // Set OIDC_ENABLED to '1' to enable OIDC login. Leave '0' to disable
 // (only username/password login remains).
-define('OIDC_ENABLED', '');
+define('OIDC_ENABLED', '0');
 
 // The Keycloak authorization server URL (base URL of the Keycloak realm).
 // Example: 'https://sso.linuxtrickslab.lan/realms/linuxtrickslab'
