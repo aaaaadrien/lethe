@@ -77,6 +77,10 @@ $i18n = json_encode(
             <i class="bi bi-key"></i>
             <span class="text-truncate"><?= htmlspecialchars(Language::t('nav.my_secrets'), ENT_QUOTES, 'UTF-8') ?></span>
           </a>
+          <a href="#" class="nav-link" data-view="profile">
+            <i class="bi bi-person"></i>
+            <span class="text-truncate"><?= htmlspecialchars(Language::t('nav.profile'), ENT_QUOTES, 'UTF-8') ?></span>
+          </a>
           <div class="logged-in-only">
             <a href="#" class="nav-link admin-only" data-view="users" style="display:none;">
               <i class="bi bi-people"></i>

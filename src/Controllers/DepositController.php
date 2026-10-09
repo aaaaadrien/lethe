@@ -9,6 +9,7 @@ use Lethe\Exceptions\UserException;
 use Lethe\FileManager;
 use Lethe\Helpers;
 use Lethe\Language;
+use Lethe\Mailer;
 use Lethe\Request;
 use Lethe\Response;
 use Lethe\Security;
@@ -187,6 +188,23 @@ final class DepositController
                 $deposit['expires_at'], // the file expires together with the deposit link
                 Helpers::now(),
             ]);
+
+            // Notify the deposit owner if they have an email.
+            $ownerStmt = Database::connect()->prepare('
+                SELECT u.email, d.label FROM users u
+                JOIN deposits d ON d.owner_user_id = u.id
+                WHERE d.id = ?
+            ');
+            $ownerStmt->execute([$deposit['id']]);
+            $owner = $ownerStmt->fetch();
+            if ($owner && !empty($owner['email'])) {
+                Mailer::sendDepositNotification(
+                    $owner['email'],
+                    $owner['label'],
+                    $uploaderName,
+                    Helpers::appUrl() . '/?deposit=' . $deposit['code']
+                );
+            }
 
             Response::json(['status' => 'ok', 'message' => Language::t('api.file_sent')]);
         } catch (UserException $e) {

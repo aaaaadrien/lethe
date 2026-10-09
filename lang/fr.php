@@ -15,6 +15,7 @@ return [
     'nav.my_deposits' => 'Mes dépôts',
     'nav.secret' => 'Message secret',
     'nav.my_secrets' => 'Mes messages secrets',
+    'nav.profile' => 'Profil',
     'nav.users' => 'Utilisateurs',
     'nav.login' => 'Connexion',
     'nav.logout' => 'Déconnexion',
@@ -131,6 +132,14 @@ return [
     'users.reset' => 'Réinitialiser',
     'users.oidc_account' => 'Compte OIDC',
 
+    // Profil (SPA)
+    'profile.title' => 'Votre profil',
+    'profile.description' => 'Définissez votre adresse e-mail. Elle est utilisée pour vous notifier quand quelqu\'un dépose un fichier sur un de vos liens de dépôt.',
+    'profile.email_label' => 'Adresse e-mail',
+    'profile.email_placeholder' => 'nom@exemple.com',
+    'profile.save' => 'Sauvegarder',
+    'profile.oidc_info' => 'Votre e-mail est automatiquement synchronisé depuis votre fournisseur OIDC.',
+
     // Infobulles des boutons-icônes
     'action.copy_link' => 'Copier le lien',
     'action.revoke_link' => 'Révoquer le lien',
@@ -234,6 +243,7 @@ return [
     'api.user_deleted' => 'Utilisateur supprimé.',
     'api.password_too_short' => 'Le mot de passe doit contenir au moins 4 caractères.',
     'api.password_reset' => 'Mot de passe réinitialisé.',
+    'api.profile_updated' => 'Profil mis à jour.',
     'api.login_required' => 'Non authentifié.',
     'api.admin_only' => 'Accès réservé aux administrateurs.',
     'api.unknown_action' => 'Action inconnue.',
@@ -251,4 +261,9 @@ return [
     'mail.subject' => 'Un fichier a été partagé avec vous',
     'mail.body' => "Bonjour,\n\n{SENDER} vous a partagé un fichier via Lethe.\n\nLien de téléchargement :\n{LINK}\n\nCe lien expirera le {EXPIRATION}.\n{PASSWORD_NOTICE}\n\nCordialement.",
     'mail.password_notice' => 'Ce fichier est protégé par un mot de passe qui vous a été communiqué séparément.',
+
+    // Notification de dépôt (envoyée au propriétaire du dépôt quand un fichier est déposé)
+    'mail.deposit.subject' => 'Un fichier a été déposé sur votre lien : :label',
+    'mail.deposit.body' => "Bonjour,\n\n{UPLOADER_NAME} a déposé un fichier sur votre lien de dépôt « {DEPOSIT_LABEL} ».\n\nLien de dépôt :\n{DEPOSIT_LINK}\n\nCordialement.",
+    'mail.deposit.anonymous' => 'Un utilisateur anonyme',
 ];

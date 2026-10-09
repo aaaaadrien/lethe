@@ -45,7 +45,7 @@ est multilingue (anglais et français) et détectée automatiquement depuis l'en
    chcon -R -t httpd_sys_rw_content_t lethe/data
    chcon -R -t httpd_sys_rw_content_t lethe/uploads
    ```
-4. Ouvrir `config.php` (à la racine, hors webroot) et adapter au minimum :
+4. Copier `config.php.example` vers `config.php` et adapter au minimum :
    - `APP_URL` : l'URL publique de l'application (ex. `https://transfer.mondomaine.fr`) —
      laisser vide pour la détection automatique
    - `MAIL_FROM_ADDRESS` / `MAIL_FROM_NAME` : l'expéditeur des e-mails

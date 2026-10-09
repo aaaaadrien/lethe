@@ -9,6 +9,7 @@
     my_deposits: 'nav.my_deposits',
     secret: 'nav.secret',
     my_secrets: 'nav.my_secrets',
+    profile: 'nav.profile',
     users: 'nav.users',
   };
 

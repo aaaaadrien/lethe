@@ -214,6 +214,12 @@ final class Auth
             return null;
         }
 
+        // Update email from OIDC payload on every login (email can change).
+        if (!empty($payload['email'])) {
+            Database::connect()->prepare('UPDATE users SET email = ? WHERE id = ?')
+                ->execute([$payload['email'], $user['id']]);
+        }
+
         // Establish session
         Session::regenerate();
         $_SESSION['user_id'] = (int)$user['id'];

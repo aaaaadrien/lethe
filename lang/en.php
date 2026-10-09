@@ -15,6 +15,7 @@ return [
     'nav.my_deposits' => 'My deposits',
     'nav.secret' => 'Secret message',
     'nav.my_secrets' => 'My secret messages',
+    'nav.profile' => 'Profile',
     'nav.users' => 'Users',
     'nav.login' => 'Log in',
     'nav.logout' => 'Log out',
@@ -131,6 +132,14 @@ return [
     'users.reset' => 'Reset',
     'users.oidc_account' => 'OIDC account',
 
+    // Profile (SPA)
+    'profile.title' => 'Your profile',
+    'profile.description' => 'Set your e-mail address. It is used to notify you when someone uploads a file to one of your deposit links.',
+    'profile.email_label' => 'E-mail address',
+    'profile.email_placeholder' => 'name@example.com',
+    'profile.save' => 'Save',
+    'profile.oidc_info' => 'Your e-mail is automatically synced from your OIDC provider.',
+
     // Icon button tooltips
     'action.copy_link' => 'Copy link',
     'action.revoke_link' => 'Revoke link',
@@ -234,6 +243,7 @@ return [
     'api.user_deleted' => 'User deleted.',
     'api.password_too_short' => 'The password must contain at least 4 characters.',
     'api.password_reset' => 'Password reset.',
+    'api.profile_updated' => 'Profile updated.',
     'api.login_required' => 'Not authenticated.',
     'api.admin_only' => 'Access restricted to administrators.',
     'api.unknown_action' => 'Unknown action.',
@@ -251,4 +261,9 @@ return [
     'mail.subject' => 'A file has been shared with you',
     'mail.body' => "Hello,\n\n{SENDER} has shared a file with you via Lethe.\n\nDownload link:\n{LINK}\n\nThis link will expire on {EXPIRATION}.\n{PASSWORD_NOTICE}\n\nBest regards.",
     'mail.password_notice' => 'This file is protected by a password that has been communicated to you separately.',
+
+    // Deposit notification (sent to the deposit owner when a file is uploaded)
+    'mail.deposit.subject' => 'A file has been deposited on your link: :label',
+    'mail.deposit.body' => "Hello,\n\n{UPLOADER_NAME} has uploaded a file to your deposit link \"{DEPOSIT_LABEL}\".\n\nDeposit link:\n{DEPOSIT_LINK}\n\nBest regards.",
+    'mail.deposit.anonymous' => 'An anonymous user',
 ];

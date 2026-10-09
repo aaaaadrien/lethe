@@ -42,7 +42,7 @@ is automatically detected from the browser's `Accept-Language` header.
    chcon -R -t httpd_sys_rw_content_t lethe/data
    chcon -R -t httpd_sys_rw_content_t lethe/uploads
    ```
-4. Open `config.php` (at the root, outside the webroot) and adapt at minimum:
+4. Copy `config.php.example` to `config.php` and adapt at minimum:
    - `APP_URL`: the public URL of the application (e.g. `https://transfer.example.com`) —
      leave empty for automatic detection
    - `MAIL_FROM_ADDRESS` / `MAIL_FROM_NAME`: the e-mail sender

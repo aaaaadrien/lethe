@@ -55,4 +55,8 @@ return function (Router $router): void {
     $router->map('create_user', fn() => $users->createUser());
     $router->map('delete_user', fn() => $users->deleteUser());
     $router->map('reset_user_password', fn() => $users->resetUserPassword());
+
+    // Profile (authenticated)
+    $router->map('get_profile', fn() => $users->getProfile());
+    $router->map('update_profile', fn() => $users->updateProfile());
 };

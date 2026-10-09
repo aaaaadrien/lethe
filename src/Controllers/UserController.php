@@ -97,4 +97,38 @@ final class UserController
         }
         Response::json(['status' => 'ok', 'message' => Language::t('api.password_reset')]);
     }
+
+    /**
+     * Get the current user's profile (email).
+     */
+    public function getProfile(): void
+    {
+        Auth::requireLogin();
+
+        $stmt = Database::connect()->prepare('SELECT email FROM users WHERE id = ?');
+        $stmt->execute([Auth::id()]);
+        $user = $stmt->fetch();
+
+        Response::json(['status' => 'ok', 'email' => $user['email'] ?? null]);
+    }
+
+    /**
+     * Update the current user's email. JSON body: email.
+     */
+    public function updateProfile(): void
+    {
+        Auth::requireLogin();
+        Security::verifyCsrf();
+
+        $email = trim((string)Request::field('email', ''));
+
+        if ($email !== '' && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            Response::json(['status' => 'error', 'message' => Language::t('api.invalid_email')], 400);
+        }
+
+        $stmt = Database::connect()->prepare('UPDATE users SET email = ? WHERE id = ?');
+        $stmt->execute([strlen($email) > 0 ? $email : null, Auth::id()]);
+
+        Response::json(['status' => 'ok', 'message' => Language::t('api.profile_updated')]);
+    }
 }

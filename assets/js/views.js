@@ -649,6 +649,46 @@ Lethe.views = {
     });
   },
 
+  /* ---------------- Profile ---------------- */
+  async profile(container) {
+    const data = await U().fetchAction('get_profile');
+    const email = data.email || '';
+
+    container.innerHTML = `
+      <div class="card">
+        <div class="card-body p-4">
+          <h2 class="h6 mb-3">${T('profile.title')}</h2>
+          <p class="text-secondary small mb-4">${T('profile.description')}</p>
+          <form id="profile-form" class="row g-3 align-items-end">
+            <div class="col-md-8">
+              <label class="form-label" for="profile-email">${T('profile.email_label')}</label>
+              <input type="email" name="email" id="profile-email" class="form-control" value="${E(email)}" placeholder="${T('profile.email_placeholder')}">
+            </div>
+            <div class="col-md-4">
+              <button type="submit" class="btn btn-accent rounded-pill w-100">${T('profile.save')}</button>
+            </div>
+          </form>
+          <div id="profile-result" class="mt-3" style="display:none;"></div>
+        </div>
+      </div>`;
+
+    const form = container.querySelector('#profile-form');
+    const resultEl = container.querySelector('#profile-result');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      resultEl.style.display = 'none';
+      try {
+        const res = await U().postAction('update_profile', { email: form.email.value });
+        resultEl.innerHTML = `<div class="result-box"><div class="result-title"><i class="bi bi-check-circle"></i> ${E(res.message)}</div></div>`;
+        resultEl.style.display = 'block';
+      } catch (err) {
+        resultEl.innerHTML = `<div class="alert alert-danger py-2 small">${E(err.message)}</div>`;
+        resultEl.style.display = 'block';
+      }
+    });
+  },
+
   /* ---------------- Users (admin) ---------------- */
   async users(container) {
     const data = await U().fetchAction('get_users');
