@@ -5,3 +5,4 @@ uploads/*
 !uploads/tmp/
 uploads/tmp/*
 !uploads/tmp/.gitkeep
+config.php
