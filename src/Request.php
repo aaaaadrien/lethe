@@ -28,6 +28,18 @@ final class Request
     }
 
     /**
+     * True when a field is present in the JSON body or in $_POST.
+     */
+    public static function hasField(string $key): bool
+    {
+        $body = self::jsonBody();
+        if (array_key_exists($key, $body)) {
+            return true;
+        }
+        return isset($_POST[$key]);
+    }
+
+    /**
      * Read a string field from the JSON body (preferred) or from $_POST.
      */
     public static function field(string $key, ?string $default = null): ?string

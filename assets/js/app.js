@@ -21,10 +21,23 @@
   const loginErrorEl = document.getElementById('login-error');
   const logoutBtn = document.getElementById('sidebar-logout-btn');
 
+  const THEME_COLORS = { light: '#f5f5f7', dark: '#121212' };
+
+  function setTheme(theme) {
+    const t = theme === 'dark' ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', t);
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) {
+      meta.setAttribute('content', THEME_COLORS[t]);
+    }
+    Lethe.state.theme = t;
+  }
+
   function setLoggedIn(user) {
     Lethe.state.currentUser = user;
     document.body.classList.toggle('logged-in', !!user);
     document.body.classList.toggle('logged-out', !user);
+    setTheme(user && user.theme ? user.theme : 'light');
     const adminLink = document.querySelector('.sidebar .nav-link.admin-only');
     if (adminLink) {
       adminLink.style.display = (user && user.is_admin) ? 'flex' : 'none';
@@ -161,6 +174,7 @@
   Lethe.state.csrfToken = document.querySelector('meta[name="csrf-token"]').content;
 
   Lethe.loadView = loadView;
+  Lethe.setTheme = setTheme;
 
   Lethe.utils.fetchAction('get_session')
     .then((data) => {

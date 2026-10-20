@@ -21,6 +21,7 @@ final class Auth
             $_SESSION['user_id'] = (int)$user['id'];
             $_SESSION['username'] = $user['username'];
             $_SESSION['is_admin'] = (int)$user['is_admin'];
+            $_SESSION['theme'] = self::normalizeTheme($user['theme'] ?? null);
             return $user;
         }
 
@@ -53,20 +54,38 @@ final class Auth
     }
 
     /**
-     * Current user as an array (id, username, is_admin) or null.
+     * Current user as an array (id, username, is_admin, theme) or null.
      *
-     * @return array{id: int, username: string, is_admin: bool}|null
+     * @return array{id: int, username: string, is_admin: bool, theme: string}|null
      */
     public static function currentUser(): ?array
     {
         if (!self::check()) {
             return null;
         }
+        $theme = $_SESSION['theme'] ?? null;
+        if ($theme === null) {
+            // Session predates the theme feature: load it from the database.
+            $stmt = Database::connect()->prepare('SELECT theme FROM users WHERE id = ?');
+            $stmt->execute([self::id()]);
+            $row = $stmt->fetch();
+            $theme = self::normalizeTheme($row['theme'] ?? null);
+            $_SESSION['theme'] = $theme;
+        }
         return [
             'id' => self::id(),
             'username' => self::username(),
             'is_admin' => self::isAdmin(),
+            'theme' => $theme,
         ];
+    }
+
+    /**
+     * Validate a stored theme value, defaulting to 'light'.
+     */
+    public static function normalizeTheme(?string $theme): string
+    {
+        return in_array($theme, ['light', 'dark'], true) ? $theme : 'light';
     }
 
     /**
@@ -225,6 +244,7 @@ final class Auth
         $_SESSION['user_id'] = (int)$user['id'];
         $_SESSION['username'] = $user['username'];
         $_SESSION['is_admin'] = (int)$user['is_admin'];
+        $_SESSION['theme'] = self::normalizeTheme($user['theme'] ?? null);
         $_SESSION['oidc_sub'] = $payload['sub'];
         $_SESSION['oidc_provider'] = OIDC_AUTH_SERVER;
 

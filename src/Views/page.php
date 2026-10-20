@@ -1,5 +1,7 @@
 <?php
 // Lethe - main single-page application view.
+use Lethe\Auth;
+use Lethe\Database;
 use Lethe\Helpers;
 use Lethe\Language;
 use Lethe\Session;
@@ -8,15 +10,25 @@ $i18n = json_encode(
     ['lang' => Language::current(), 'strings' => Language::catalog()],
     JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
 );
+
+// Theme: light by default, per-user preference (dark) when logged in.
+$theme = 'light';
+if (Auth::check()) {
+    $stmt = Database::connect()->prepare('SELECT theme FROM users WHERE id = ?');
+    $stmt->execute([Auth::id()]);
+    $row = $stmt->fetch();
+    $theme = Auth::normalizeTheme($row['theme'] ?? null);
+}
+$themeColor = $theme === 'dark' ? '#121212' : '#f5f5f7';
 ?>
 <!DOCTYPE html>
-<html lang="<?= htmlspecialchars(Language::current(), ENT_QUOTES, 'UTF-8') ?>">
+<html lang="<?= htmlspecialchars(Language::current(), ENT_QUOTES, 'UTF-8') ?>" data-theme="<?= $theme ?>">
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= APP_NAME ?></title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<?= rawurlencode('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="24" fill="#0d0d0d"/><path d="M16 42 Q 28 30 40 42 T 64 42 T 88 42" stroke="#ffffff" stroke-width="8" fill="none" stroke-linecap="round"/><path d="M16 62 Q 28 50 40 62 T 64 62 T 88 62" stroke="#6C5CFF" stroke-width="8" fill="none" stroke-linecap="round"/></svg>') ?>"/>
-    <meta name="theme-color" content="#121212"/>
+    <meta name="theme-color" content="<?= $themeColor ?>"/>
     <meta name="csrf-token" content="<?= htmlspecialchars(Session::csrfToken(), ENT_QUOTES, 'UTF-8') ?>">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -45,7 +57,7 @@ $i18n = json_encode(
             <svg width="24" height="24" viewBox="0 0 100 100"><rect width="100" height="100" rx="24" fill="#0d0d0d"/><path d="M16 42 Q 28 30 40 42 T 64 42 T 88 42" stroke="#ffffff" stroke-width="8" fill="none" stroke-linecap="round"/><path d="M16 62 Q 28 50 40 62 T 64 62 T 88 62" stroke="#6C5CFF" stroke-width="8" fill="none" stroke-linecap="round"/></svg>
             Lethe
           </div>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" data-bs-target="#main-nav-offcanvas" aria-label="Close"></button>
+          <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#main-nav-offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body d-flex flex-column">
           <div class="logo d-none d-md-flex">
@@ -122,7 +134,7 @@ $i18n = json_encode(
         <div class="modal-content p-2">
           <div class="modal-header">
             <h5 class="modal-title"><?= htmlspecialchars(Language::t('login.title'), ENT_QUOTES, 'UTF-8') ?></h5>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
           </div>
           <div class="modal-body">
             <form id="login-form">
@@ -151,7 +163,7 @@ $i18n = json_encode(
         <div class="modal-content p-2">
           <div class="modal-header">
             <h5 class="modal-title" id="confirm-modal-title"><?= htmlspecialchars(Language::t('common.confirm'), ENT_QUOTES, 'UTF-8') ?></h5>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
           </div>
           <div class="modal-body">
             <p class="text-secondary" id="confirm-modal-message"></p>

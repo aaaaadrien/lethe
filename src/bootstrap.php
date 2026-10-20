@@ -47,10 +47,10 @@ function fatal_error_output(string $message): void
     $hint = htmlspecialchars(Language::t('error.page_hint'), ENT_QUOTES, 'UTF-8');
     $lang = htmlspecialchars(Language::current(), ENT_QUOTES, 'UTF-8');
     echo '<!DOCTYPE html><html lang="' . $lang . '"><head><meta charset="UTF-8"><title>' . $title . '</title></head>'
-        . '<body style="font-family:sans-serif;background:#030303;color:#fff;display:flex;align-items:center;'
-        . 'justify-content:center;height:100vh;margin:0"><div style="background:#121212;border-radius:16px;'
-        . 'padding:2rem 2.5rem;max-width:480px;text-align:center"><h1 style="font-size:1.1rem;margin:0 0 .5rem">' . $title . '</h1>'
-        . '<p style="color:#aaa;font-size:.9rem;margin:0">' . $hint . '</p></div></body></html>';
+        . '<body style="font-family:sans-serif;background:#f5f5f7;color:#1a1a1e;display:flex;align-items:center;'
+        . 'justify-content:center;height:100vh;margin:0"><div style="background:#ffffff;border-radius:16px;'
+        . 'padding:2rem 2.5rem;max-width:480px;text-align:center;box-shadow:0 16px 48px rgba(0,0,0,0.12)"><h1 style="font-size:1.1rem;margin:0 0 .5rem">' . $title . '</h1>'
+        . '<p style="color:#6b6b76;font-size:.9rem;margin:0">' . $hint . '</p></div></body></html>';
 }
 
 set_exception_handler(function (Throwable $e): void {

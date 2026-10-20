@@ -138,6 +138,9 @@ return [
     'profile.email_label' => 'Adresse e-mail',
     'profile.email_placeholder' => 'nom@exemple.com',
     'profile.save' => 'Sauvegarder',
+    'profile.theme' => 'Thème',
+    'profile.theme_light' => 'Clair',
+    'profile.theme_dark' => 'Sombre',
     'profile.oidc_info' => 'Votre e-mail est automatiquement synchronisé depuis votre fournisseur OIDC.',
 
     // Infobulles des boutons-icônes
@@ -244,6 +247,7 @@ return [
     'api.password_too_short' => 'Le mot de passe doit contenir au moins 4 caractères.',
     'api.password_reset' => 'Mot de passe réinitialisé.',
     'api.profile_updated' => 'Profil mis à jour.',
+    'api.invalid_theme' => 'Thème invalide (clair ou sombre).',
     'api.login_required' => 'Non authentifié.',
     'api.admin_only' => 'Accès réservé aux administrateurs.',
     'api.unknown_action' => 'Action inconnue.',

@@ -99,35 +99,61 @@ final class UserController
     }
 
     /**
-     * Get the current user's profile (email).
+     * Get the current user's profile (email, theme).
      */
     public function getProfile(): void
     {
         Auth::requireLogin();
 
-        $stmt = Database::connect()->prepare('SELECT email FROM users WHERE id = ?');
+        $stmt = Database::connect()->prepare('SELECT email, theme FROM users WHERE id = ?');
         $stmt->execute([Auth::id()]);
         $user = $stmt->fetch();
 
-        Response::json(['status' => 'ok', 'email' => $user['email'] ?? null]);
+        Response::json([
+            'status' => 'ok',
+            'email' => $user['email'] ?? null,
+            'theme' => Auth::normalizeTheme($user['theme'] ?? null),
+        ]);
     }
 
     /**
-     * Update the current user's email. JSON body: email.
+     * Update the current user's profile. JSON body: email and/or theme.
+     * Only the provided fields are updated.
      */
     public function updateProfile(): void
     {
         Auth::requireLogin();
         Security::verifyCsrf();
 
-        $email = trim((string)Request::field('email', ''));
+        $fields = [];
+        $params = [];
 
-        if ($email !== '' && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            Response::json(['status' => 'error', 'message' => Language::t('api.invalid_email')], 400);
+        if (Request::hasField('email')) {
+            $email = trim((string)Request::field('email', ''));
+            if ($email !== '' && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                Response::json(['status' => 'error', 'message' => Language::t('api.invalid_email')], 400);
+            }
+            $fields[] = 'email = ?';
+            $params[] = $email !== '' ? $email : null;
         }
 
-        $stmt = Database::connect()->prepare('UPDATE users SET email = ? WHERE id = ?');
-        $stmt->execute([strlen($email) > 0 ? $email : null, Auth::id()]);
+        if (Request::hasField('theme')) {
+            $theme = (string)Request::field('theme', '');
+            if (!in_array($theme, ['light', 'dark'], true)) {
+                Response::json(['status' => 'error', 'message' => Language::t('api.invalid_theme')], 400);
+            }
+            $fields[] = 'theme = ?';
+            $params[] = $theme;
+            $_SESSION['theme'] = $theme;
+        }
+
+        if ($fields === []) {
+            Response::json(['status' => 'error', 'message' => Language::t('api.invalid_request')], 400);
+        }
+
+        $params[] = Auth::id();
+        $stmt = Database::connect()->prepare('UPDATE users SET ' . implode(', ', $fields) . ' WHERE id = ?');
+        $stmt->execute($params);
 
         Response::json(['status' => 'ok', 'message' => Language::t('api.profile_updated')]);
     }

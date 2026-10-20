@@ -8,11 +8,12 @@ permettant à des invités de vous envoyer des fichiers sans compte, et des **me
 secrets** : un texte chiffré (AES-256-GCM), partagé via un lien à usage unique et durée de
 vie limitée (1, 7, 14 ou 30 jours), définitivement détruit après sa première consultation.
 
-L'interface est une application monopage (SPA) au thème sombre : une barre latérale donne
+L'interface est une application monopage (SPA) au thème clair : une barre latérale donne
 accès aux différents outils (envoi de fichier, mes fichiers, mes dépôts, messages secrets,
 administration), les données sont chargées en AJAX via une API `?action=...`. L'interface
 est multilingue (anglais et français) et détectée automatiquement depuis l'en-tête
-`Accept-Language` du navigateur.
+`Accept-Language` du navigateur. Les utilisateurs connectés peuvent passer en thème sombre
+depuis leur profil ; le choix est mémorisé par compte.
 
 ## Prérequis
 

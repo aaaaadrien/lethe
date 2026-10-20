@@ -138,6 +138,9 @@ return [
     'profile.email_label' => 'E-mail address',
     'profile.email_placeholder' => 'name@example.com',
     'profile.save' => 'Save',
+    'profile.theme' => 'Theme',
+    'profile.theme_light' => 'Light',
+    'profile.theme_dark' => 'Dark',
     'profile.oidc_info' => 'Your e-mail is automatically synced from your OIDC provider.',
 
     // Icon button tooltips
@@ -244,6 +247,7 @@ return [
     'api.password_too_short' => 'The password must contain at least 4 characters.',
     'api.password_reset' => 'Password reset.',
     'api.profile_updated' => 'Profile updated.',
+    'api.invalid_theme' => 'Invalid theme (light or dark).',
     'api.login_required' => 'Not authenticated.',
     'api.admin_only' => 'Access restricted to administrators.',
     'api.unknown_action' => 'Unknown action.',

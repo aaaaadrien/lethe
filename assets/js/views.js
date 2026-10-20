@@ -58,7 +58,7 @@ Lethe.views = {
           <div id="file-drop-zone" class="file-drop-zone mb-3">
             <i class="bi bi-cloud-arrow-up d-block mb-2"></i>
             <p class="mb-1">${T('dropzone.text')}</p>
-            <p class="small mb-0" style="color:#777">${T('sendfile.max_size', { size: U().formatBytes(cfg.maxFileSize) })}</p>
+            <p class="small mb-0" style="color:var(--lethe-muted)">${T('sendfile.max_size', { size: U().formatBytes(cfg.maxFileSize) })}</p>
             <input type="file" id="file-input" class="d-none">
           </div>
           <div id="selected-file" class="mb-3 text-secondary small"></div>
@@ -215,7 +215,7 @@ Lethe.views = {
                   <i class="bi bi-clipboard me-1"></i>${T('common.copy')}
                 </button>
               </div>
-              <p class="small mt-2 mb-0" style="color:#777">${T('sendfile.success_note')}</p>
+              <p class="small mt-2 mb-0" style="color:var(--lethe-muted)">${T('sendfile.success_note')}</p>
             </div>`;
           resultEl.querySelector('.btn-sm-copy').addEventListener('click', (ev) => {
             U().copyToClipboard(ev.currentTarget, data.link);
@@ -406,7 +406,7 @@ Lethe.views = {
               </button>
             </div>
 
-            <hr style="border-color:#2a2a2a;">
+            <hr style="border-color:var(--lethe-border);">
             <h3 class="h6 mb-2">${T('mydeposits.files_received', { count: d.files.length })}</h3>
             ${d.files.length === 0 ? `
               <p class="text-secondary small mb-0">${T('mydeposits.no_files')}</p>` : `
@@ -566,7 +566,7 @@ Lethe.views = {
                 <i class="bi bi-clipboard me-1"></i>${T('common.copy')}
               </button>
             </div>
-            <p class="small mt-2 mb-0" style="color:#777">${T('secret.result_note')}</p>
+            <p class="small mt-2 mb-0" style="color:var(--lethe-muted)">${T('secret.result_note')}</p>
           </div>`;
         resultEl.style.display = 'block';
         resultEl.querySelector('#copy-secret-link').addEventListener('click', (ev) => {
@@ -653,19 +653,35 @@ Lethe.views = {
   async profile(container) {
     const data = await U().fetchAction('get_profile');
     const email = data.email || '';
+    const theme = data.theme === 'dark' ? 'dark' : 'light';
 
     container.innerHTML = `
       <div class="card">
         <div class="card-body p-4">
           <h2 class="h6 mb-3">${T('profile.title')}</h2>
           <p class="text-secondary small mb-4">${T('profile.description')}</p>
-          <form id="profile-form" class="row g-3 align-items-end">
-            <div class="col-md-8">
-              <label class="form-label" for="profile-email">${T('profile.email_label')}</label>
-              <input type="email" name="email" id="profile-email" class="form-control" value="${E(email)}" placeholder="${T('profile.email_placeholder')}">
+          <form id="profile-form">
+            <div class="row g-3 align-items-end">
+              <div class="col-md-8">
+                <label class="form-label" for="profile-email">${T('profile.email_label')}</label>
+                <input type="email" name="email" id="profile-email" class="form-control" value="${E(email)}" placeholder="${T('profile.email_placeholder')}">
+              </div>
+              <div class="col-md-4">
+                <button type="submit" class="btn btn-accent rounded-pill w-100">${T('profile.save')}</button>
+              </div>
             </div>
-            <div class="col-md-4">
-              <button type="submit" class="btn btn-accent rounded-pill w-100">${T('profile.save')}</button>
+            <div class="row g-3 align-items-center mt-4 pt-3" style="border-top:1px solid var(--lethe-border);">
+              <div class="col-auto">
+                <span class="form-label mb-0">${T('profile.theme')}</span>
+              </div>
+              <div class="col">
+                <div class="btn-group" role="group" aria-label="${T('profile.theme')}">
+                  <input type="radio" class="btn-check" name="theme" id="theme-light" value="light"${theme === 'light' ? ' checked' : ''}>
+                  <label class="btn btn-outline-secondary rounded-pill" for="theme-light"><i class="bi bi-sun me-2"></i>${T('profile.theme_light')}</label>
+                  <input type="radio" class="btn-check" name="theme" id="theme-dark" value="dark"${theme === 'dark' ? ' checked' : ''}>
+                  <label class="btn btn-outline-secondary rounded-pill" for="theme-dark"><i class="bi bi-moon me-2"></i>${T('profile.theme_dark')}</label>
+                </div>
+              </div>
             </div>
           </form>
           <div id="profile-result" class="mt-3" style="display:none;"></div>
@@ -679,13 +695,28 @@ Lethe.views = {
       e.preventDefault();
       resultEl.style.display = 'none';
       try {
-        const res = await U().postAction('update_profile', { email: form.email.value });
+        const res = await U().postAction('update_profile', { email: form.email.value, theme: form.theme.value });
+        Lethe.setTheme(form.theme.value);
         resultEl.innerHTML = `<div class="result-box"><div class="result-title"><i class="bi bi-check-circle"></i> ${E(res.message)}</div></div>`;
         resultEl.style.display = 'block';
       } catch (err) {
         resultEl.innerHTML = `<div class="alert alert-danger py-2 small">${E(err.message)}</div>`;
         resultEl.style.display = 'block';
       }
+    });
+
+    container.querySelectorAll('input[name="theme"]').forEach((radio) => {
+      radio.addEventListener('change', async () => {
+        try {
+          const res = await U().postAction('update_profile', { theme: radio.value });
+          Lethe.setTheme(radio.value);
+          U().showToast(res.message);
+        } catch (err) {
+          U().showToast(err.message, 'error');
+          const current = container.querySelector('input[name="theme"][value="' + (Lethe.state.theme || 'light') + '"]');
+          if (current) current.checked = true;
+        }
+      });
     });
   },
 

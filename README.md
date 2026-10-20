@@ -7,10 +7,11 @@ optional password protection, mandatory expiration and e-mail notification. It a
 messages**: text encrypted with AES-256-GCM, shared through a one-time link with a limited
 lifetime (1, 7, 14 or 30 days), permanently destroyed after its first view.
 
-The interface is a dark-themed single-page application (SPA): a sidebar gives access to each
+The interface is a light-themed single-page application (SPA): a sidebar gives access to each
 tool (send a file, my files, my deposits, secret messages, administration), and data is
 loaded via AJAX through a `?action=...` API. The UI is multilingual (English and French) and
-is automatically detected from the browser's `Accept-Language` header.
+is automatically detected from the browser's `Accept-Language` header. Logged-in users can
+switch to a dark theme from their profile; the preference is stored per account.
 
 ## Prerequisites
 

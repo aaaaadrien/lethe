@@ -1,18 +1,52 @@
-/* Lethe - design system (dark theme, same design language as Apollon Music). */
+/* Lethe - design system (light theme by default, dark theme via [data-theme="dark"]). */
 
 :root {
+  --lethe-bg: #f5f5f7;
+  --lethe-surface: #ffffff;
+  --lethe-surface-2: #ececf1;
+  --lethe-primary-text: #1a1a1e;
+  --lethe-secondary-text: #6b6b76;
+  --lethe-accent: #6C5CFF;
+  --lethe-accent-hover: #5b4bd6;
+  --lethe-success: #1e9e57;
+  --lethe-danger: #e04848;
+  --lethe-warning: #c98a12;
+  --lethe-info: #1f8fd6;
+  --lethe-border: #e2e2e8;
+  --lethe-border-strong: #c9c9d4;
+  --lethe-placeholder: #9a9aa5;
+  --lethe-muted: #8a8a94;
+  --lethe-check-border: #c4c4cc;
+  --lethe-scrollbar-hover: #b8b8c2;
+  --lethe-table-stripe: rgba(0, 0, 0, 0.02);
+  --lethe-empty-icon: #d5d5dc;
+  --lethe-card-shadow: 0 16px 48px rgba(0, 0, 0, 0.12);
+  --header-height-mobile: 64px;
+}
+
+[data-theme="dark"] {
   --lethe-bg: #030303;
   --lethe-surface: #121212;
   --lethe-surface-2: #242424;
   --lethe-primary-text: #ffffff;
   --lethe-secondary-text: #aaaaaa;
-  --lethe-accent: #6C5CFF;
-  --lethe-accent-hover: #5b4bd6;
   --lethe-success: #2ecc71;
   --lethe-danger: #ff5c5c;
   --lethe-warning: #f5b942;
   --lethe-info: #4cc2ff;
-  --header-height-mobile: 64px;
+  --lethe-border: #2a2a2a;
+  --lethe-border-strong: #4a4a4a;
+  --lethe-placeholder: #666;
+  --lethe-muted: #777;
+  --lethe-check-border: #444;
+  --lethe-scrollbar-hover: #444;
+  --lethe-table-stripe: rgba(255, 255, 255, 0.02);
+  --lethe-empty-icon: #333;
+  --lethe-card-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
+}
+
+[data-theme="dark"] .btn-close {
+  filter: invert(1) grayscale(100%) brightness(200%);
 }
 
 *, *::before, *::after {
@@ -48,7 +82,7 @@ body {
 ::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--lethe-surface-2); border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: #444; }
+::-webkit-scrollbar-thumb:hover { background: var(--lethe-scrollbar-hover); }
 
 /* ---------- Layout ---------- */
 .app-container {
@@ -146,7 +180,7 @@ body {
 }
 
 .nav-link.active {
-  color: #ffffff;
+  color: var(--lethe-primary-text);
 }
 
 .nav-link.active .bi {
@@ -260,10 +294,10 @@ body.logged-in .logged-out-only { display: none !important; }
 .table {
   --bs-table-bg: transparent;
   --bs-table-color: var(--lethe-secondary-text);
-  --bs-table-border-color: #2a2a2a;
+  --bs-table-border-color: var(--lethe-border);
   --bs-table-hover-bg: var(--lethe-surface-2);
   --bs-table-hover-color: var(--lethe-primary-text);
-  --bs-table-striped-bg: rgba(255,255,255,0.02);
+  --bs-table-striped-bg: var(--lethe-table-stripe);
   color: var(--lethe-secondary-text);
   margin-bottom: 0;
 }
@@ -278,7 +312,7 @@ body.logged-in .logged-out-only { display: none !important; }
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--lethe-secondary-text);
-  border-bottom: 1px solid #2a2a2a;
+  border-bottom: 1px solid var(--lethe-border);
   white-space: nowrap;
 }
 
@@ -333,14 +367,14 @@ body.logged-in .logged-out-only { display: none !important; }
 
 .btn-outline-secondary {
   background: transparent;
-  border: 1px solid #3a3a3a !important;
+  border: 1px solid var(--lethe-border-strong) !important;
   color: var(--lethe-secondary-text);
 }
 
 .btn-outline-secondary:hover {
   background-color: var(--lethe-surface-2);
   color: var(--lethe-primary-text);
-  border-color: #4a4a4a !important;
+  border-color: var(--lethe-border-strong) !important;
 }
 
 .btn-outline-danger {
@@ -401,7 +435,7 @@ body.logged-in .logged-out-only { display: none !important; }
 }
 
 .form-control::placeholder {
-  color: #666;
+  color: var(--lethe-placeholder);
 }
 
 .form-label {
@@ -412,12 +446,12 @@ body.logged-in .logged-out-only { display: none !important; }
 
 .form-text {
   font-size: 0.78rem;
-  color: #777;
+  color: var(--lethe-muted);
 }
 
 .form-check-input {
   background-color: var(--lethe-surface-2);
-  border: 1px solid #444 !important;
+  border: 1px solid var(--lethe-check-border) !important;
 }
 
 .form-check-input:checked {
@@ -459,7 +493,7 @@ body.logged-in .logged-out-only { display: none !important; }
 
 /* ---------- File drop zone ---------- */
 .file-drop-zone {
-  border: 2px dashed #3a3a3a;
+  border: 2px dashed var(--lethe-border-strong);
   border-radius: 16px;
   padding: 3rem 1rem;
   text-align: center;
@@ -520,7 +554,7 @@ body.logged-in .logged-out-only { display: none !important; }
 
 .empty-state .bi {
   font-size: 3rem;
-  color: #333;
+  color: var(--lethe-empty-icon);
   display: block;
   margin-bottom: 1rem;
 }
@@ -586,7 +620,7 @@ body.logged-in .logged-out-only { display: none !important; }
 }
 
 .public-card {
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
+  box-shadow: var(--lethe-card-shadow);
 }
 
 .public-icon {

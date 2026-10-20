@@ -47,9 +47,25 @@ final class Database
                 oidc_provider TEXT,
                 email TEXT,
                 is_admin INTEGER NOT NULL DEFAULT 0,
+                theme TEXT NOT NULL DEFAULT 'light',
                 created_at TEXT NOT NULL
             );
         ");
+
+        // Migration: add columns to databases created with older schemas.
+        $userColumns = $db->query('PRAGMA table_info(users)')->fetchAll(PDO::FETCH_COLUMN, 1);
+        if (!in_array('email', $userColumns, true)) {
+            $db->exec('ALTER TABLE users ADD COLUMN email TEXT');
+        }
+        if (!in_array('oidc_sub', $userColumns, true)) {
+            $db->exec('ALTER TABLE users ADD COLUMN oidc_sub TEXT');
+        }
+        if (!in_array('oidc_provider', $userColumns, true)) {
+            $db->exec('ALTER TABLE users ADD COLUMN oidc_provider TEXT');
+        }
+        if (!in_array('theme', $userColumns, true)) {
+            $db->exec("ALTER TABLE users ADD COLUMN theme TEXT NOT NULL DEFAULT 'light'");
+        }
 
         $db->exec("
             CREATE TABLE IF NOT EXISTS files (
