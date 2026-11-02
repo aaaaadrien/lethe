@@ -5,7 +5,7 @@ namespace Lethe;
 
 final class Version
 {
-    public const STRING = '0.2';
+    public const STRING = '0.3';
 
     public static function get(): string
     {
