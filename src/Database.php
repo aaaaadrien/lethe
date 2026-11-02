@@ -107,6 +107,7 @@ final class Database
                 ciphertext TEXT NOT NULL,
                 iv TEXT NOT NULL,
                 tag TEXT NOT NULL,
+                recipient_email TEXT,
                 expires_at TEXT NOT NULL,
                 created_at TEXT NOT NULL,
                 consumed INTEGER NOT NULL DEFAULT 0,
@@ -114,6 +115,11 @@ final class Database
                 FOREIGN KEY (owner_user_id) REFERENCES users(id)
             );
         ");
+
+        $secretColumns = $db->query('PRAGMA table_info(secrets)')->fetchAll(PDO::FETCH_COLUMN, 1);
+        if (!in_array('recipient_email', $secretColumns, true)) {
+            $db->exec('ALTER TABLE secrets ADD COLUMN recipient_email TEXT');
+        }
 
         $db->exec("
             CREATE TABLE IF NOT EXISTS deposit_files (

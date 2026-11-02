@@ -7,6 +7,7 @@ use Lethe\Auth;
 use Lethe\Database;
 use Lethe\Helpers;
 use Lethe\Language;
+use Lethe\Mailer;
 use Lethe\Request;
 use Lethe\Response;
 use Lethe\SecretMessage;
@@ -40,7 +41,9 @@ final class SecretController
     }
 
     /**
-     * Creates a secret message. JSON body: message, expiration_days.
+     * Creates a secret message and (optionally) e-mails the share link.
+     * JSON body: message, expiration_days, delivery_method, recipient_email,
+     * custom_message.
      */
     public function createSecret(): void
     {
@@ -49,6 +52,9 @@ final class SecretController
 
         $message = trim((string)Request::field('message', ''));
         $expirationDays = Request::intField('expiration_days', SECRET_DEFAULT_EXPIRATION_DAYS);
+        $deliveryMethod = (string)Request::field('delivery_method', 'link');
+        $recipientEmail = trim((string)Request::field('recipient_email', ''));
+        $customMessage = (string)Request::field('custom_message', '');
 
         if ($message === '') {
             Response::json(['status' => 'error', 'message' => Language::t('api.message_empty')], 400);
@@ -60,9 +66,25 @@ final class SecretController
         if (!in_array($expirationDays, SECRET_EXPIRATION_OPTIONS, true)) {
             Response::json(['status' => 'error', 'message' => Language::t('api.invalid_validity')], 400);
         }
+        if ($deliveryMethod === 'email' && !filter_var($recipientEmail, FILTER_VALIDATE_EMAIL)) {
+            Response::json(['status' => 'error', 'message' => Language::t('api.invalid_email')], 400);
+        }
 
-        $code = SecretMessage::create(Auth::id(), $message, $expirationDays);
-        Response::json(['status' => 'ok', 'message' => Language::t('api.secret_created'), 'link' => Helpers::appUrl() . '/?secret=' . $code]);
+        $code = SecretMessage::create(Auth::id(), $message, $expirationDays, $deliveryMethod === 'email' ? $recipientEmail : null);
+        $link = Helpers::appUrl() . '/?secret=' . $code;
+
+        if ($deliveryMethod === 'email') {
+            $secret = SecretMessage::find($code);
+            $expiresAtHuman = $secret ? Helpers::formatDate($secret['expires_at']) : '';
+            if (!Mailer::sendSecretLink($recipientEmail, $link, $expiresAtHuman, $customMessage)) {
+                Response::json(['status' => 'error', 'message' => Language::t('api.secret_email_failed')], 502);
+                return;
+            }
+            Response::json(['status' => 'ok', 'sent_by_email' => true]);
+            return;
+        }
+
+        Response::json(['status' => 'ok', 'message' => Language::t('api.secret_created'), 'link' => $link]);
     }
 
     public function deleteSecret(): void

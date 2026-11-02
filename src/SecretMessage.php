@@ -12,8 +12,10 @@ final class SecretMessage
 {
     /**
      * Encrypts and stores a new secret message. Returns the unique link code.
+     * When $recipientEmail is given (e-mail delivery), it is kept in the row
+     * for traceability, like the files table does.
      */
-    public static function create(int $ownerUserId, string $plaintext, int $expirationDays): string
+    public static function create(int $ownerUserId, string $plaintext, int $expirationDays, ?string $recipientEmail = null): string
     {
         $encrypted = Crypto::encrypt($plaintext);
 
@@ -21,8 +23,8 @@ final class SecretMessage
         $expiresAt = (new \DateTime())->modify('+' . $expirationDays . ' days')->format('c');
 
         $stmt = Database::connect()->prepare('
-            INSERT INTO secrets (code, owner_user_id, ciphertext, iv, tag, expires_at, created_at, consumed, consumed_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, 0, NULL)
+            INSERT INTO secrets (code, owner_user_id, ciphertext, iv, tag, recipient_email, expires_at, created_at, consumed, consumed_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0, NULL)
         ');
         $stmt->execute([
             $code,
@@ -30,6 +32,7 @@ final class SecretMessage
             $encrypted['ciphertext'],
             $encrypted['iv'],
             $encrypted['tag'],
+            $recipientEmail,
             $expiresAt,
             Helpers::now(),
         ]);

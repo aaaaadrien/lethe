@@ -541,6 +541,28 @@ Lethe.views = {
               </select>
               <div class="form-text">${T('secret.validity_hint')}</div>
             </div>
+            <div class="mb-4">
+              <span class="form-label d-block">${T('sendfile.share_mode')}</span>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="delivery_method" id="secret-delivery-link" value="link" checked>
+                <label class="form-check-label" for="secret-delivery-link">${T('sendfile.method_link')}</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="delivery_method" id="secret-delivery-email" value="email">
+                <label class="form-check-label" for="secret-delivery-email">${T('sendfile.method_email')}</label>
+              </div>
+            </div>
+            <div id="secret-email-fields" class="mb-4" style="display:none;">
+              <div class="mb-3">
+                <label class="form-label" for="secret-recipient-email">${T('sendfile.recipient_email')}</label>
+                <input type="email" name="recipient_email" id="secret-recipient-email" class="form-control">
+              </div>
+              <div class="mb-3">
+                <label class="form-label" for="secret-custom-message">${T('sendfile.custom_message')}</label>
+                <textarea name="custom_message" id="secret-custom-message" class="form-control" rows="4"
+                          placeholder="${T('sendfile.custom_message_placeholder')}"></textarea>
+              </div>
+            </div>
             <button type="submit" class="btn btn-accent rounded-pill px-4">
               <i class="bi bi-envelope me-2"></i>${T('secret.generate')}
             </button>
@@ -549,30 +571,51 @@ Lethe.views = {
       </div>`;
 
     const form = container.querySelector('#secret-form');
+    const deliveryLink = container.querySelector('#secret-delivery-link');
+    const deliveryEmail = container.querySelector('#secret-delivery-email');
+    const emailFields = container.querySelector('#secret-email-fields');
+
+    [deliveryLink, deliveryEmail].forEach((el) => el.addEventListener('change', () => {
+      emailFields.style.display = deliveryEmail.checked ? 'block' : 'none';
+      container.querySelector('#secret-recipient-email').required = deliveryEmail.checked;
+    }));
+
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       try {
         const res = await U().postAction('create_secret', {
           message: form.message.value,
           expiration_days: parseInt(form.expiration_days.value, 10),
+          delivery_method: deliveryEmail.checked ? 'email' : 'link',
+          recipient_email: deliveryEmail.checked ? form.recipient_email.value : '',
+          custom_message: form.custom_message.value,
         });
         const resultEl = container.querySelector('#secret-result');
-        resultEl.innerHTML = `
-          <div class="result-box">
-            <div class="result-title"><i class="bi bi-check-circle"></i> ${E(res.message)}</div>
-            <div class="d-flex align-items-center flex-wrap gap-2">
-              <code class="share-link flex-grow-1">${E(res.link)}</code>
-              <button type="button" class="btn btn-outline-secondary rounded-pill" id="copy-secret-link">
-                <i class="bi bi-clipboard me-1"></i>${T('common.copy')}
-              </button>
-            </div>
-            <p class="small mt-2 mb-0" style="color:var(--lethe-muted)">${T('secret.result_note')}</p>
-          </div>`;
+        if (res.sent_by_email) {
+          resultEl.innerHTML = `
+            <div class="result-box">
+              <div class="result-title"><i class="bi bi-check-circle"></i> ${T('secret.success_email')}</div>
+              <p class="mb-0 text-secondary small">${T('secret.success_email_note')}</p>
+            </div>`;
+        } else {
+          resultEl.innerHTML = `
+            <div class="result-box">
+              <div class="result-title"><i class="bi bi-check-circle"></i> ${E(res.message)}</div>
+              <div class="d-flex align-items-center flex-wrap gap-2">
+                <code class="share-link flex-grow-1">${E(res.link)}</code>
+                <button type="button" class="btn btn-outline-secondary rounded-pill" id="copy-secret-link">
+                  <i class="bi bi-clipboard me-1"></i>${T('common.copy')}
+                </button>
+              </div>
+              <p class="small mt-2 mb-0" style="color:var(--lethe-muted)">${T('secret.result_note')}</p>
+            </div>`;
+          resultEl.querySelector('#copy-secret-link').addEventListener('click', (ev) => {
+            U().copyToClipboard(ev.currentTarget, res.link);
+          });
+        }
         resultEl.style.display = 'block';
-        resultEl.querySelector('#copy-secret-link').addEventListener('click', (ev) => {
-          U().copyToClipboard(ev.currentTarget, res.link);
-        });
         form.reset();
+        emailFields.style.display = 'none';
       } catch (err) {
         U().showToast(err.message, 'error');
       }

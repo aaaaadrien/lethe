@@ -39,6 +39,34 @@ final class Mailer
     }
 
     /**
+     * Sends the secret-message link e-mail (same transports as sendShareLink()).
+     * A secret message has no password and can be viewed only once, hence a
+     * dedicated translated subject/body (mail.secret.subject / mail.secret.body).
+     */
+    public static function sendSecretLink(string $to, string $link, string $expiresAtHuman, ?string $customMessage = null): bool
+    {
+        $senderName = Auth::username() ?? MAIL_FROM_NAME;
+
+        $subject = Language::t('mail.secret.subject');
+
+        $body = ($customMessage !== null && trim($customMessage) !== '')
+            ? $customMessage
+            : Language::t('mail.secret.body');
+
+        $body = str_replace(
+            ['{LINK}', '{EXPIRATION}', '{PASSWORD_NOTICE}', '{SENDER}'],
+            [$link, $expiresAtHuman, '', $senderName],
+            $body
+        );
+
+        if (MAIL_TRANSPORT === 'smtp') {
+            return self::sendViaSmtp($to, $subject, $body);
+        }
+
+        return self::sendViaNativeMail($to, $subject, $body);
+    }
+
+    /**
      * Send a deposit notification to the deposit owner when a file is uploaded.
      * Uses the deposit notification subject/body from config or the translated
      * default (mail.deposit.subject / mail.deposit.body).

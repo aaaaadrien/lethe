@@ -120,6 +120,8 @@ return [
     'secret.validity_hint' => "Le lien expire automatiquement passé ce délai, s'il n'a pas déjà été consulté.",
     'secret.generate' => 'Générer le lien',
     'secret.result_note' => "Transmettez ce lien par un canal de confiance : il ne s'affichera nulle part ailleurs et ne sera plus consultable une fois ouvert et révélé par le destinataire.",
+    'secret.success_email' => 'Message secret envoyé par e-mail',
+    'secret.success_email_note' => 'Le lien de consultation a été envoyé au destinataire. Vous pouvez aussi le retrouver dans Mes messages secrets.',
 
     // Mes messages secrets (SPA)
     'mysecrets.empty' => 'Aucun message secret créé pour le moment.',
@@ -236,6 +238,7 @@ return [
     'api.message_too_long' => 'Le message dépasse la longueur maximale autorisée (:count caractères).',
     'api.invalid_validity' => 'Durée de validité invalide.',
     'api.secret_created' => 'Message secret créé.',
+    'api.secret_email_failed' => "Le message a été créé mais l'envoi de l'e-mail a échoué. Le lien reste disponible dans Mes messages secrets.",
     'api.secret_not_found' => 'Message introuvable.',
     'api.secret_deleted' => 'Le message secret a été supprimé.',
     'api.user_credentials_required' => "Nom d'utilisateur et mot de passe (4 caractères min.) requis.",
@@ -265,6 +268,10 @@ return [
     'mail.subject' => 'Un fichier a été partagé avec vous',
     'mail.body' => "Bonjour,\n\n{SENDER} vous a partagé un fichier via Lethe.\n\nLien de téléchargement :\n{LINK}\n\nCe lien expirera le {EXPIRATION}.\n{PASSWORD_NOTICE}\n\nCordialement.",
     'mail.password_notice' => 'Ce fichier est protégé par un mot de passe qui vous a été communiqué séparément.',
+
+    // Message secret (envoyé au destinataire quand le mode de partage est « e-mail »)
+    'mail.secret.subject' => 'Un message secret vous a été partagé',
+    'mail.secret.body' => "Bonjour,\n\n{SENDER} vous a partagé un message secret via Lethe.\n\nLien de consultation :\n{LINK}\n\nCe lien expirera le {EXPIRATION} et ne pourra être utilisé qu'une seule fois.\n\nCordialement.",
 
     // Notification de dépôt (envoyée au propriétaire du dépôt quand un fichier est déposé)
     'mail.deposit.subject' => 'Un fichier a été déposé sur votre lien : :label',

@@ -120,6 +120,8 @@ return [
     'secret.validity_hint' => 'The link expires automatically after this period, if it has not been viewed yet.',
     'secret.generate' => 'Generate the link',
     'secret.result_note' => 'Pass this link through a trusted channel: it will not be displayed anywhere else and will no longer be viewable once it has been opened and revealed by the recipient.',
+    'secret.success_email' => 'Secret message sent by e-mail',
+    'secret.success_email_note' => 'The viewing link has been sent to the recipient. You can also find it in My secret messages.',
 
     // My secret messages (SPA)
     'mysecrets.empty' => 'No secret messages created yet.',
@@ -236,6 +238,7 @@ return [
     'api.message_too_long' => 'The message exceeds the maximum allowed length (:count characters).',
     'api.invalid_validity' => 'Invalid validity period.',
     'api.secret_created' => 'Secret message created.',
+    'api.secret_email_failed' => 'The message was created but the e-mail could not be sent. The link remains available in My secret messages.',
     'api.secret_not_found' => 'Message not found.',
     'api.secret_deleted' => 'The secret message has been deleted.',
     'api.user_credentials_required' => 'Username and password (min. 4 characters) required.',
@@ -265,6 +268,10 @@ return [
     'mail.subject' => 'A file has been shared with you',
     'mail.body' => "Hello,\n\n{SENDER} has shared a file with you via Lethe.\n\nDownload link:\n{LINK}\n\nThis link will expire on {EXPIRATION}.\n{PASSWORD_NOTICE}\n\nBest regards.",
     'mail.password_notice' => 'This file is protected by a password that has been communicated to you separately.',
+
+    // Secret message (sent to the recipient when the sharing method is "e-mail")
+    'mail.secret.subject' => 'A secret message has been shared with you',
+    'mail.secret.body' => "Hello,\n\n{SENDER} has shared a secret message with you via Lethe.\n\nViewing link:\n{LINK}\n\nThis link will expire on {EXPIRATION} and can only be used once.\n\nBest regards.",
 
     // Deposit notification (sent to the deposit owner when a file is uploaded)
     'mail.deposit.subject' => 'A file has been deposited on your link: :label',
